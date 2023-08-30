@@ -1,7 +1,8 @@
 \documentclass[xcolor=table,aspectratio=169]{beamer}
 \usetheme{Madrid}
 \usepackage{adjustbox}
-%\usetheme{metropolis}
+\usepackage{dcolumn}
+\newcolumntype{d}[1]{D{.}{.}{#1}}
 \usepackage[style=verbose-note, sorting=none, sortcites=true, maxnames=1, giveninits=true, autocite=superscript, doi=false, url=false, isbn=false, backend=biber, citetracker=false, pagetracker=false, bibencoding=utf8, eprint=false]{biblatex}
 % \usepackage[backend=bibtex,style=authoryear-comp,citestyle=authoryear-comp,firstinits=true,sorting=none,maxnames=1,doi=false,isbn=false,url=false,eprint=false]{biblatex}
 \usepackage[T1]{fontenc}
@@ -335,7 +336,7 @@
   \textbf{Koopmans functionals in practice}
 
   \large
-  \textbf{workflows, automation, and more...}
+  \textbf{minimisation, screening coefficients, automation, and more...}
   \end{center}
   \end{minipage}
   \end{tcolorbox}
@@ -370,20 +371,13 @@
 \begin{frame}{Outline}
 
    \begin{itemize}
-      \item What does a Koopmans calculation actually involve?
+      \item How do Koopmans functionals differ from standard DFT?
+      \item What implications does this have for running these calculations?
       \item What tools are there for performing these calculations?
       \item Where can I find out more?
    \end{itemize}
 
 \end{frame}
-
-% Outline
-% - briefly overview the core ingredients of Koopmans functionals
-% - what computational problems do we need to solve (amass a list?)
-% - what tools do we have -- perhaps have a table with what functionality each code has?
-% - ASE
-% - the Workflow class and how it is constructed
-% - scriptability
 
 % \begin{frame}{Failures of DFT}
 %    \begin{itemize}
@@ -541,8 +535,8 @@
 
 \begin{frame}{Orbital-density-dependence}
 
-   Initialise with MLWFs, then (optionally) solve with CG minimisation:
-   \begin{description}[<+(1)->]
+   \onslide<2->{Initialise with MLWFs, then (optionally) solve with CG minimisation:}
+   \begin{description}[<+(2)->]
       \item[outer loop:] $\varphi^{(n+1)}_i = \varphi_i^{(n)} + \Delta_i$
       \item[inner loop:] $\varphi^{(n+1)}_i = \sum_{j}U_{ij}\varphi_j^{(n)}$
    \end{description}
@@ -587,65 +581,53 @@
 
 \end{frame}
 
-% \begin{frame}{Importance of localisation}
-%    \begin{center}
-%       \includegraphics[width=0.6\textwidth]{figures/nguyen_bulk_limit.png}
-%    \end{center}
-%    \blfootcite{Nguyen2018}
-% 
-%    \vspace{-2ex}
-% 
-%    \begin{overlayarea}{\textwidth}{0.25\textheight}
-%       \only<2-3>{
-%          In the bulk limit for one cell $\Delta E = E(N-\delta N) - E(N)$
-%       }%
-% 
-%       \only<3>{
-%          Across all the cells $
-%             \Delta E = \frac{1}{\delta N}\left(E(N-\delta N) - E(N)\right) = -\frac{dE}{dN} = -\varepsilon_\mathsf{HO}$
-%       }%
-%       \only<4->{
-%          \begin{equation*}
-%             \lim_{n_i(r) \rightarrow 0}
-%             v^\mathsf{KI}_{{i}}/\alpha_i =
-%             \lim_{n_i(r) \rightarrow 0}
-%             - E_{\mathsf{H}}\left[{n_{i}}\right]
-%             + E_{\mathsf{xc}}\left[\rho\right]
-%             - E_{\mathsf{xc}}\left[\rho-{n_{i}}\right]
-%             - \int d\mathbf{r'}
-%             v_\mathsf{xc}(\mathbf{r}', [\rho])
-%             {n_{i}}(\mathbf{r}')
-%             = 0
-%          \end{equation*}
-%       }%
-%    \end{overlayarea}
-% \end{frame}
+\begin{frame}{Importance of localisation}
+   \begin{center}
+      \includegraphics[width=0.6\textwidth]{figures/nguyen_bulk_limit.png}
+   \end{center}
+   \blfootcite{Nguyen2018}
 
-% \begin{frame}{Orbital-density-dependence}
-%    Other features of orbital-density-dependence
-%    \begin{itemize}[<+->]
-%       \item ODD functional means that we know $\hat H \ket{\varphi_i}$ for variational orbitals $\{\ket{\varphi_i}\}$ but we don't know $\hat H$ in general
-%       \item Practically we can often use MLWFs
-%       \item a natural generalisation in the direction of spectral functional theory (as discussed already by Andrea)\footcite{Ferretti2014}
-%    \end{itemize}
-% 
-% \end{frame}
+   \vspace{-2ex}
+
+   \begin{overlayarea}{\textwidth}{0.25\textheight}
+      \only<2-3>{
+         In the bulk limit for one cell $\Delta E = E(N-\delta N) - E(N)$
+      }%
+
+      \only<3>{
+         Across all the cells $
+            \Delta E = \frac{1}{\delta N}\left(E(N-\delta N) - E(N)\right) = -\frac{dE}{dN} = -\varepsilon_\mathsf{HO}$
+      }%
+      \only<4->{
+         \begin{equation*}
+            \lim_{n_i(r) \rightarrow 0}
+            v^\mathsf{KI}_{{i}}/\alpha_i =
+            \lim_{n_i(r) \rightarrow 0}
+            - E_{\mathsf{H}}\left[{n_{i}}\right]
+            + E_{\mathsf{xc}}\left[\rho\right]
+            - E_{\mathsf{xc}}\left[\rho-{n_{i}}\right]
+            - \int d\mathbf{r'}
+            v_\mathsf{xc}(\mathbf{r}', [\rho])
+            {n_{i}}(\mathbf{r}')
+            = 0
+         \end{equation*}
+      }%
+   \end{overlayarea}
+\end{frame}
+
+\begin{frame}{Orbital-density-dependence}
+   Other features of orbital-density-dependence
+   \begin{itemize}[<+(1)->]
+      \item ODD functional means that we know $\hat H \ket{\varphi_i}$ for variational orbitals $\{\ket{\varphi_i}\}$ but we don't know $\hat H$ in general
+      \item Practically we can often use MLWFs
+      \item a natural generalisation in the direction of spectral functional theory (as discussed already by Andrea)\footcite{Ferretti2014}
+   \end{itemize}
+
+\end{frame}
 
 \begin{frame}{Screening}
    \small
    \begin{itemize}[<+->]
-      \item What is screening (in the context of Koopmans functionals)?
-
-            \begin{equation*}
-               \underbrace{
-                  \frac{d E}{d f_i}
-               }_{\substack{\text{including} \\ \text{relaxation}}}
-               \xleftarrow{\qquad ? \qquad}
-               % \approx
-               % \alpha_i
-               \underbrace{\frac{\partial E}{\partial f_i}
-               }_{\substack{\text{excluding} \\ \text{relaxation}}}
-            \end{equation*}
       \item In Hartree-Fock (the original ``Koopmans' theorem''):
             \begin{equation*}
                E^{HF}_{ee} = \frac{1}{2}\sum_{ij} f_i f_j \int d\mathbf{r} d\mathbf{r}' \frac{|\psi_i(\mathbf{r})|^2|\psi_j(\mathbf{r'})|^2}{\mathbf{r} - \mathbf{r}'} - \frac{\psi_i^*(\mathbf{r})\psi_j^*(\mathbf{r'})\psi_i(\mathbf{r'})\psi_j(\mathbf{r})}{\mathbf{r} - \mathbf{r}'}
@@ -691,7 +673,7 @@
       \only<7->{Given this, how to work out the ideal $\alpha$?}
       \only<8->{
          \begin{equation*}
-            \alpha^{n+1} = \alpha^{n} \frac{E_i(N-1) - E(N) - \lambda_{ii}(0)}{\lambda_{ii}(\alpha^{n}) - \lambda_{ii}(0)}
+            \alpha_{n+1} = \alpha_{n} \frac{E_i(N-1) - E(N) - \lambda_{ii}(0)}{\lambda_{ii}(\alpha_{n}) - \lambda_{ii}(0)}
          \end{equation*}
       }
    \end{overlayarea}
@@ -723,10 +705,10 @@
 \end{frame}
 
 \begin{frame}{Screening via DFPT}
-   Original formulation requires explicit charged defect calculations in a supercell
+   How can we avoid explicit charged defect calculations in a supercell?
 
    \onslide<2->{
-   Now reformulated in terms of DFPT\footcite{Colonna2019}...
+   Reformulate in terms of DFPT\footcite{Colonna2019}...
 
    \begin{equation*}
    \alpha_{i} = 1 + \frac{\langle v^{i}_{\rm pert} \vert \Delta^{i} n \rangle}{\langle n_{i} \vert v^{i}_{\rm pert} \rangle}.
@@ -758,6 +740,127 @@
    \end{itemize}
    
 \end{frame}
+
+
+\begin{frame}{Koopmans functionals: results for molecules}
+   \small
+   Ionisation potentials $ = E(N-1) - E(N) \stackrel{?}{=} -\varepsilon_{HO}$ of 100 molecules (the GW100 set) cf. CCSD(T)
+   \begin{center}
+      \includegraphics[height=0.2\textwidth]{figures/colonna_2019_gw100_ip}
+      % \onslide<2->{\includegraphics[height=0.23\textwidth]{figures/colonna_2019_gw100_deeper}}
+   \end{center}
+
+   \vspace{-3ex}
+   Ultraviolet photoemission spectra
+   \begin{center}
+      \begin{tikzpicture}
+         \node [inner sep=0pt](fig) at (0,0) {\includegraphics[height=0.35\textheight]{figures/fig_nguyen_prl_spectra.png}};
+         \draw [very thick, color=seaborn_red] (-5.35,-0.07) rectangle (5.4,1.6);
+      \end{tikzpicture}
+   \end{center}
+   \vspace{-2ex}
+
+   \blfootcite{Colonna2018,Nguyen2015}
+\end{frame}
+
+\begin{frame}{Koopmans functionals: results for solids}
+   \begin{minipage}[c]{0.35\textwidth}
+      \includegraphics[width=\textwidth]{figures/fig_nguyen_prx_bandgaps.png}
+   \end{minipage}
+   \hspace{1em}
+   \begin{minipage}[c]{0.6\textwidth}
+
+      \footnotesize
+      Mean absolute error (eV) across prototypical semiconductors and insulators
+
+      \vspace{1ex}
+      \begin{tabular}{c S[table-format = 2.2] S[table-format = 2.2] >{\color{seaborn_red}\bfseries}S[table-format = 2.2] >{\color{seaborn_red}\bfseries}S[table-format = 2.2] S[table-format = 2.2]}
+                          & {PBE} & {G\textsubscript{0}W\textsubscript{0}} & {KI} & {KIPZ} & {QSG$\tilde{\mathrm{W}}$} \\
+         \midrule
+         \midrule
+         $E_\mathrm{gap}$ & 2.54  & 0.56                                   & 0.27 & 0.22   & 0.18                      \\
+         %                                  & {MAPE (\%)} & 48.28 & 12.10      & 7.0           \\
+         \midrule
+         IP               & 1.09  & 0.39                                   & 0.19 & 0.21   & 0.49                      \\
+         %                                  & {MAPE (\%)} & 15.58 & 5.71                                   & 2.99 & 3.14   & 7.41
+      \end{tabular}
+   \end{minipage}
+
+   \blfootcite{Nguyen2018}
+\end{frame}
+
+\begin{frame}{Koopmans functionals: results for solids}
+   
+\begin{table}[t]
+   \centering
+   \footnotesize
+   \begin{tabular}{r@{ $\rightarrow$ } l *{3}{d{2.2}} >{\color{seaborn_red}}S[table-format = 2.2] >{\color{seaborn_red}}S[table-format = 2.2] d{2.2} @{$\pm$} d{1.2}}
+      \hline
+      \hline
+      \multicolumn{2}{c}{ }
+                                & \multicolumn{1}{c}{PBE}
+                                & \multicolumn{1}{c}{G\textsubscript{0}W\textsubscript{0}\footnote{\cite{Shishkin2007} for $E_g$ and \cite{Hybertsen1986} for the transitions;}}
+                                & \multicolumn{1}{c}{scG$\tilde{\mathrm{W}}$\footcite{Shishkin2007a}}
+                                & \multicolumn{1}{c}{
+                                 \textcolor{seaborn_red}{\bfseries KI@[PBE,MLWFs]}}
+                                & \multicolumn{1}{c}{
+                                 \textcolor{seaborn_red}{\bfseries KIPZ@PBE}}
+                                & \multicolumn{2}{c}{exp\footcite{Madelung2004}}                                                                                                                                                                   \\
+      \hline
+      \multicolumn{2}{c}{$E_g$} &
+      0.49 &  1.06 & 1.14 &  1.16 &   1.15 & \multicolumn{2}{c}{1.17}\\
+      $\Gamma_{1v}$ & $\Gamma_{25'v}$ & 11.97 & 12.04 &      & 11.97 & 12.09 & 12.5 &  0.6\\
+      $X_{1v}$ & $\Gamma_{25'v}$ &  7.82 &       &      &  7.82       &       & \multicolumn{2}{c}{7.75}\\
+      $X_{4v}$ & $\Gamma_{25'v}$ &  2.85 &  2.99 &      &  2.85 & 2.86 & \multicolumn{2}{c}{2.90}\\
+      $L_{2'v}$ & $\Gamma_{25'v}$ &  9.63 &  9.79 &      &  9.63 &  9.74 &  9.3 &  0.4\\
+      $L_{1v}$ & $\Gamma_{25'v}$ &  6.98 &  7.18 &      &  6.98 &   7.04 &  6.8 &  0.2\\
+      $L_{3'v}$ & $\Gamma_{25'v}$ &  1.19 &  1.27 &      &  1.19 &       &  1.2 &  0.2\\
+      $\Gamma_{25'v}$ &  $\Gamma_{15c}$ &  2.48 &  3.29 &      &  3.17  &  3.20 & 3.35 & 0.01\\
+      $\Gamma_{25'v}$ &  $\Gamma_{2'c}$ &  3.28 &  4.02 &      &  3.95  &  3.95 & 4.15 & 0.05\\
+      $\Gamma_{25'v}$ &        $X_{1c}$ &  0.62 &  1.38 &      &  1.28  &  1.31 & \multicolumn{2}{c}{1.13} \\
+      $\Gamma_{25'v}$ &        $L_{1c}$ &  1.45 &  2.21 &      &  2.12  &  2.13 & 2.04 & 0.06\\
+      $\Gamma_{25'v}$ &        $L_{3c}$ &  3.24 &  4.18 &      &  3.91  &  3.94 &  3.9 &  0.1\\
+      \hline
+      \multicolumn{2}{c}{MSE} & 0.35 &  0.02 &      &  0.01 &   0.03\\
+      \multicolumn{2}{c}{MAE} & 0.44 &  0.21 &      &  0.14 &   0.17\\
+      \hline
+      \hline
+   \end{tabular}
+
+   % \textsuperscript{\emph{a}} this work;
+   % \textsuperscript{\emph{b}} Ref.~\citenum{Shishkin2007} for $E_g$ and Ref.~\citenum{Hybertsen1986} for the transitions;
+   % \textsuperscript{\emph{c}} Ref.~\citenum{Shishkin2007a};
+   % \textsuperscript{\emph{d}} Ref.~\citenum{DeGennaro2022};
+   % \textsuperscript{\emph{e}} Ref.~\citenum{Madelung2004}
+\end{table}
+\end{frame}
+\begin{frame}{Koopmans functionals: results for toy systems}
+   For Hooke's atom (two electrons in a harmonic confining potential with Coulombic repulsion)
+
+   \begin{figure}[t]
+      \begin{subfigure}{0.4\textwidth}
+         \includegraphics[width=\columnwidth]{figures/schubert_vxc.jpeg}
+      \end{subfigure}
+      \begin{subfigure}{0.4\textwidth}
+         \onslide<2->{
+         \includegraphics[width=\columnwidth]{figures/schubert_vxc_integrated.jpeg}
+         }
+      \end{subfigure}
+   \end{figure}
+
+   \blfootcite{Schubert2023}
+\end{frame}
+
+\begin{frame}{Koopmans functionals: caveats}
+
+   \begin{itemize}[<+(1)->]
+      \item will \emph{not} solve H$_2^+$!
+      \item restricted to systems with a non-zero band gap
+      \item empty state localization in the bulk limit
+      \item can potentially break the crystal point group symmetry\blfootcite{Su2020}
+   \end{itemize}
+\end{frame}
+
 
 \begin{frame}{The workflows}
 
@@ -811,28 +914,28 @@
 %    \end{tabularx}
 % \end{frame}
 
-\begin{frame}{Implementations of Koopmans functionals}
-
-   \texttt{kcw.x} (DFPT implementation) is distributed in Quantum ESPRESSO v7.1 onwards
-
-   \vspace{2ex}
-
-   \texttt{kcp.x} (supercell implementation) is available publically
-
-   \vspace{2ex}
-   \small
-   \renewcommand{\arraystretch}{1.5}
-   \rowcolors{1}{seaborn_bg_grey}{seaborn_bg_grey_half}
-   \begin{tabularx}{\columnwidth}{L L L}
-                                   & \textbf{\texttt{kcw.x}}                                                       & \textbf{\texttt{kcp.x}}                                                                                                          
-      \onslide<2->{\\ \hline available flavours            & KI only & KI, KIPZ, pKIPZ, PZ}
-      \onslide<3->{\\ screening parameters...     & DFPT & finite differences}
-      \onslide<4->{\\ $k$-point sampling         & explicit & implicit (via supercell)}
-      \onslide<5->{\\ orbital minimization & uses MLWFs as a proxy (approximate) & explicit}
-      \onslide<6->{\\ scaling & $\mathcal{O}(N_\mathbf{q}N_\mathbf{k}N_\mathsf{orb}^3)$ & $\mathcal{O}(N_\mathbf{k}^3 N_\mathsf{orb}^3) = \mathcal{O}(N_k) \times $ primitive cell approach}
-   \end{tabularx}
-   
-\end{frame}
+% \begin{frame}{Implementations of Koopmans functionals}
+% 
+%    \texttt{kcw.x} (DFPT implementation) is distributed in Quantum ESPRESSO v7.1 onwards
+% 
+%    \vspace{2ex}
+% 
+%    \texttt{kcp.x} (supercell implementation) is available publically
+% 
+%    \vspace{2ex}
+%    \small
+%    \renewcommand{\arraystretch}{1.5}
+%    \rowcolors{1}{seaborn_bg_grey}{seaborn_bg_grey_half}
+%    \begin{tabularx}{\columnwidth}{L L L}
+%                                    & \textbf{\texttt{kcw.x}}                                                       & \textbf{\texttt{kcp.x}}                                                                                                          
+%       \onslide<2->{\\ \hline available flavours            & KI only & KI, KIPZ, pKIPZ, PZ}
+%       \onslide<3->{\\ screening parameters...     & DFPT & finite differences}
+%       \onslide<4->{\\ $k$-point sampling         & explicit & implicit (via supercell)}
+%       \onslide<5->{\\ orbital minimization & uses MLWFs as a proxy (approximate) & explicit}
+%       \onslide<6->{\\ scaling & $\mathcal{O}(N_\mathbf{q}N_\mathbf{k}N_\mathsf{orb}^3)$ & $\mathcal{O}(N_\mathbf{k}^3 N_\mathsf{orb}^3) = \mathcal{O}(N_k) \times $ primitive cell approach}
+%    \end{tabularx}
+%    
+% \end{frame}
 
 \begin{frame}{How do I run these calculations?}
    Nevertheless, complicated workflows mean that...
@@ -932,13 +1035,11 @@
 
 \begin{frame}{Take home messages}
 
-   % \includegraphics[height=0.2\paperheight]{figures/colonna_2019_gw100_ip.jpeg}
-   % \hfill
-   % \includegraphics[height=0.2\paperheight]{figures/fig_nguyen_prx_bandgaps.png}
-   % \hfill
-   \begin{center}
-   \adjustbox{height=0.3\paperheight}{\input{supercell_workflow.tex}\end{tikzpicture}}
-   \end{center}
+   \includegraphics[height=0.2\paperheight]{figures/colonna_2019_gw100_ip.jpeg}
+   \hfill
+   \includegraphics[height=0.2\paperheight]{figures/fig_nguyen_prx_bandgaps.png}
+   \hfill
+   \adjustbox{height=0.2\paperheight}{\input{supercell_workflow.tex}\end{tikzpicture}}
 
    \begin{itemize}
       \item Koopmans functionals are more complicated than a simple semi-local DFT calculation, because of\dots
@@ -982,6 +1083,8 @@
 
    \vspace{1ex}
    \begin{center}
+      Want to find out more? Go to \url{koopmans-functionals.org}
+      \vspace{1em}
       Follow \includegraphics[height=\fontcharht\font`\B]{figures/Twitter_Bird.png} \textcolor{twitter_blue}{@ed\_linscott} for updates | Slides available at \includegraphics[height=\fontcharht\font`\B]{logos/github-favicon.png} github/elinscott
    \end{center}
 
@@ -1038,61 +1141,61 @@
 %    % For further reading on Koopmans functionals, see \cite{Dabo2010,Borghi2014,Nguyen2018,Colonna2018,Colonna2019,DeGennaro2022,Colonna2022}
 % 
 % \end{frame}
-% \begin{frame}{Learning the screening parameters}
-%    \begin{center}
-%       \begin{tikzpicture}
-%          \node[inner sep=0pt] (water box) at (0,0)
-%          {
-%             \includegraphics[width=0.25\textwidth]{figures/orbital.emp.00191_cropped.png}
-%          };
-%          \node[below=0cm of water box] (density) {$\rho_i(\mathbf{r})$};
-%          \node[right=0.2\textwidth of water box] (power spectrum) {
-%             $
-%                \begin{bmatrix}
-%                   x_{0} \\
-%                   x_{1} \\
-%                   x_{2} \\
-%                   \vdots
-%                \end{bmatrix}
-%             $
-%          };
-%          \path[line] (water box) -- node [midway, above, align=center] (decomposition) {power spectrum \\ decomposition} (power spectrum);
-%          \node[right=0.2\textwidth of power spectrum] (screening parameter) {$\alpha_i$};
-%          \path[line] (power spectrum) -- node [midway, above, align=center] (model) {ML model} (screening parameter);
-%       \end{tikzpicture}
-%    \end{center}
-% 
-%    \vspace{-4em}
-% 
-%    \blfootcite{Schubert2022}
-% 
-%    \begin{align*}
-%       c^i_{nlm,k=\mathsf{orbital}} & =\int d\textbf{r} g_{nl}(r)Y_{lm}(\theta,\varphi)\rho^i(\textbf{r}-\textbf{R}^i)                        \\
-%       p^i_{n_1n_2l,k_1k_2}         & =\pi \sqrt{\frac{8}{2l+1}}\sum\limits_m {c_{n_1lm,k_1}^{i *}}c_{n_2lm,k_2}^i \label{eq: power spectrum}
-%    \end{align*}
-% 
-%    % $g_{nl}$ = orthonormalised radial Gaussian basis functions
-% 
-%    % $Y_{lm}$ = spherical harmonics
-% 
-% \end{frame}
-% 
-% \begin{frame}{Learning the screening parameters}
-%    \begin{center}
-% 
-%       \includegraphics[height=0.7\paperheight]{figures/CsSnI3_calc_vs_pred_Edward.png}
-%       \includegraphics[height=0.7\paperheight]{figures/convergence_analysis_Edward.png}
-% 
-%       loss of accuracy of the band gap of $\sim$ 0.02 eV
-% 
-%       (cf. when calculating screening parameters \emph{ab initio})
-% 
-%       speedup of 70$\times$
-%    \end{center}
-% 
-%    \blfootcite{Schubert2022}
-% 
-% \end{frame}
+\begin{frame}{Learning the screening parameters}
+   \begin{center}
+      \begin{tikzpicture}
+         \node[inner sep=0pt] (water box) at (0,0)
+         {
+            \includegraphics[width=0.25\textwidth]{figures/orbital.emp.00191_cropped.png}
+         };
+         \node[below=0cm of water box] (density) {$\rho_i(\mathbf{r})$};
+         \node[right=0.2\textwidth of water box] (power spectrum) {
+            $
+               \begin{bmatrix}
+                  x_{0} \\
+                  x_{1} \\
+                  x_{2} \\
+                  \vdots
+               \end{bmatrix}
+            $
+         };
+         \path[line] (water box) -- node [midway, above, align=center] (decomposition) {power spectrum \\ decomposition} (power spectrum);
+         \node[right=0.2\textwidth of power spectrum] (screening parameter) {$\alpha_i$};
+         \path[line] (power spectrum) -- node [midway, above, align=center] (model) {ML model} (screening parameter);
+      \end{tikzpicture}
+   \end{center}
+
+   \vspace{-4em}
+
+   \blfootcite{Schubert2022}
+
+   \begin{align*}
+      c^i_{nlm,k=\mathsf{orbital}} & =\int d\textbf{r} g_{nl}(r)Y_{lm}(\theta,\varphi)\rho^i(\textbf{r}-\textbf{R}^i)                        \\
+      p^i_{n_1n_2l,k_1k_2}         & =\pi \sqrt{\frac{8}{2l+1}}\sum\limits_m {c_{n_1lm,k_1}^{i *}}c_{n_2lm,k_2}^i \label{eq: power spectrum}
+   \end{align*}
+
+   % $g_{nl}$ = orthonormalised radial Gaussian basis functions
+
+   % $Y_{lm}$ = spherical harmonics
+
+\end{frame}
+
+\begin{frame}{Learning the screening parameters}
+   \begin{center}
+
+      \includegraphics[height=0.7\paperheight]{figures/CsSnI3_calc_vs_pred_Edward.png}
+      \includegraphics[height=0.7\paperheight]{figures/convergence_analysis_Edward.png}
+
+      loss of accuracy of the band gap of $\sim$ 0.02 eV
+
+      (cf. when calculating screening parameters \emph{ab initio})
+
+      speedup of 70$\times$
+   \end{center}
+
+   \blfootcite{Schubert2022}
+
+\end{frame}
 
 \begin{frame}{Resonance with other efforts}
    \begin{itemize}
