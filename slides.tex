@@ -368,16 +368,16 @@
 
 \frame{\titlepage}
 
-\begin{frame}{Outline}
-
-   \begin{itemize}
-      \item How do Koopmans functionals differ from standard DFT?
-      \item What implications does this have for running these calculations?
-      \item What tools are there for performing these calculations?
-      \item Where can I find out more?
-   \end{itemize}
-
-\end{frame}
+% \begin{frame}{Outline}
+% 
+%    \begin{itemize}
+%       \item How do Koopmans functionals differ from standard DFT?
+%       \item What implications does this have for running these calculations?
+%       \item What tools are there for performing these calculations?
+%       \item Where can I find out more?
+%    \end{itemize}
+% 
+% \end{frame}
 
 % \begin{frame}{Failures of DFT}
 %    \begin{itemize}
@@ -511,15 +511,15 @@
       + f_i\left(-E_\mathsf{Hxc}[\rho - \rho_i] + E_\mathsf{Hxc}[\rho - \rho_i + n_i]\right)
    \end{align*}
 
+   % \onslide<2->{
+   %    Potential is given by $v_{i}(\mathsf{r}) = \frac{\delta E}{\delta \rho_i(\mathbf{r})}$. After some derivation\dots
+
+   %    \begin{align*}
+   %       v_i/\alpha_i = v_\mathsf{scalar} {+ \delta_{ij}v_\mathsf{diag}(\mathbf{r}) + (1 - \delta_{ij})v_\mathsf{nondiag}(\mathbf{r})}
+   %    \end{align*}
+
+   % }
    \onslide<2->{
-      Potential is given by $v_{i}(\mathsf{r}) = \frac{\delta E}{\delta \rho_i(\mathbf{r})}$. After some derivation\dots
-
-      \begin{align*}
-         v_i/\alpha_i = v_\mathsf{scalar} {+ \delta_{ij}v_\mathsf{diag}(\mathbf{r}) + (1 - \delta_{ij})v_\mathsf{nondiag}(\mathbf{r})}
-      \end{align*}
-
-   }
-   \onslide<3->{
       For filled orbitals with KI:
 
       \begin{equation*}
@@ -744,7 +744,7 @@
 
 \begin{frame}{Koopmans functionals: results for molecules}
    \small
-   Ionisation potentials $ = E(N-1) - E(N) \stackrel{?}{=} -\varepsilon_{HO}$ of 100 molecules (the GW100 set) cf. CCSD(T)
+   Ionisation potentials of 100 molecules cf. CCSD(T)
    \begin{center}
       \includegraphics[height=0.2\textwidth]{figures/colonna_2019_gw100_ip}
       % \onslide<2->{\includegraphics[height=0.23\textwidth]{figures/colonna_2019_gw100_deeper}}
@@ -861,12 +861,20 @@
    \end{itemize}
 \end{frame}
 
+\begin{frame}{The workflows}
+   The general workflow:
+   \begin{itemize}
+      \item define/initialize a set of variational orbitals
+      \item calculate the screening parameters $\{\alpha_i\}$
+      \item construct and diagonalize the Hamiltonian
+   \end{itemize}
+\end{frame}
 
 \begin{frame}{The workflows}
 
    \vspace{1ex}
 
-   \onslide<2->{
+   \onslide<1->{
       (a) finite difference calculations using a supercell
 
       \vspace{-2ex}
@@ -874,14 +882,12 @@
    }
 
    \vspace{-1.5ex}
-   \onslide<3->{
+   \onslide<2->{
       (b) DFPT in a primitive cell
 
       \vspace{-2ex}
       \adjustbox{width=0.655\textwidth}{\input{primitive_workflow.tex}}
    }
-
-   \onslide<4->{(c) via machine learning}
    % \onslide<6>{
    %    \vspace{-0.375\paperheight}
    %    \begin{flushright}
@@ -938,7 +944,7 @@
 % \end{frame}
 
 \begin{frame}{How do I run these calculations?}
-   Nevertheless, complicated workflows mean that...
+   Complicated workflows mean that...
    \begin{itemize}[<+(1)->]
       \item lots of different codes that need to handshake
       \item lots of scope for human error
@@ -1025,11 +1031,10 @@
        \item[\texttt{calculations}] a list of \texttt{ASE} calculators 
        \item[\texttt{kpoints}] a custom class containing $k$-point information
        \item[\texttt{pseudopotentials}] a dictionary of pseudopotentials
-       \item[...] 
     \end{description}
    \end{description}
 
-   \onslide<7>{We will see examples in the hands-on!}
+   \onslide<6>{We will see examples in the hands-on!}
    
 \end{frame}
 
